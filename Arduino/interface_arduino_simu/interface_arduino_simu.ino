@@ -14,10 +14,10 @@ Servo anemometre;
 Servo altimetre;
 Servo variometre;
 
-int valPotMancheAxe1,valPotMancheAxe1_old;
-int valPotMancheAxe2,valPotMancheAxe2_old;
-int valPotAerofrein, valPotAerofrein_old;
-int valPotPalonnier, valPotPalonnier_old;
+int valPotMancheAxe1;
+int valPotMancheAxe2;
+int valPotAerofrein;
+int valPotPalonnier;
 
 
 int valServoAnemometre;
@@ -42,42 +42,22 @@ void inputData() {
   valPotPalonnier = analogRead(PORT_POT_PALONNIER);
 }
 
-void exportDataSimu() {
-  if (valPotMancheAxe1_old != valPotMancheAxe1){
-    valPotMancheAxe1_old = valPotMancheAxe1;
-    Serial.print("!MA1");
-    Serial.println(valPotMancheAxe1);
-  }
-  if (valPotMancheAxe2_old != valPotMancheAxe2){
-    valPotMancheAxe2_old = valPotMancheAxe2;
-    Serial.print("!MA2");
-    Serial.println(valPotMancheAxe2);
-  }
-  if (valPotPalonnier_old != valPotPalonnier){
-    valPotPalonnier_old = valPotPalonnier;
-    Serial.print("!PAL");
-    Serial.println(valPotPalonnier);
-  }
-  if (valPotAerofrein_old != valPotAerofrein){
-    valPotAerofrein_old = valPotAerofrein;
-    Serial.print("!AER");
-    Serial.println(valPotAerofrein);
-  }
-}
 
-void importDataSimu() {
+void comSerialSimu() {
 
   if (Serial.available() > 0) {
 
     char SerialInByte = Serial.read();
 
-    if (SerialInByte == 10) {
+    if (SerialInByte == 10) { // 10 valeur ASCII du saut de ligne
       if (cmd.substring(0, 3) == "ANE") {
         valServoAnemometre = cmd.substring(3).toInt();
       } else if (cmd.substring(0, 3) == "ALT") {
         valServoAltimetre = cmd.substring(3).toInt();
       } else if (cmd.substring(0, 3) == "VAR") {
         valServoVariometre = cmd.substring(3).toInt();
+      } else if (cmd.substring(0, 3) == "REL") {
+        exportDataSimu();
       }
       cmd = "";
       Serial.flush();
@@ -85,8 +65,20 @@ void importDataSimu() {
       cmd += String(SerialInByte);
     }
   }
-  delay(10);
 }
+
+
+void exportDataSimu() {
+  Serial.print("MA1");
+  Serial.println(valPotMancheAxe1);
+  Serial.print("MA2");
+  Serial.println(valPotMancheAxe2);
+  Serial.print("PAL");
+  Serial.println(valPotPalonnier);
+  Serial.print("AER");
+  Serial.println(valPotAerofrein);
+}
+
 
 void outputData() {
   anemometre.write(valServoAnemometre);
@@ -94,6 +86,7 @@ void outputData() {
   variometre.write(valServoVariometre);
 }
 
+/*
 void outputDataDebug() {
   Serial.print("anemometre ");
   Serial.print(valServoAnemometre);
@@ -102,11 +95,10 @@ void outputDataDebug() {
   Serial.print(", variometre ");
   Serial.println(valServoVariometre);
 }
-
+*/
 void loop() {
-  Serial.println(millis());
   inputData();
-  exportDataSimu();
-  importDataSimu();
+  comSerialSimu();
   outputData();
+  //outputDataDebug();
 }
