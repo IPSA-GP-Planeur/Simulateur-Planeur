@@ -60,7 +60,7 @@ def ExecuteEuler(theta):
     alpha = (theta - gamma) 
 
     #angle entre Va et l'axe horizontal de l'avion, dépend de theta défini par l'utilisateur
-    AF = WindowEvent.af
+    AF = WindowEvent.SpoilerValue()
     #On récupère la valeur des aérofreins définie par l'utilisateur
     
     vx_new = A[2]

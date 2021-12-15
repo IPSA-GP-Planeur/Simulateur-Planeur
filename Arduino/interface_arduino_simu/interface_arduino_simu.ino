@@ -51,11 +51,11 @@ void setup() {
 
 // fonction qui actualise la valeur des entrées (potentiomètres)
 void inputData() {
-  valMancheAxeX = analogRead(PORT_POT_MANCHE_AXE_X);
-  valMancheAxeY = analogRead(PORT_POT_MANCHE_AXE_Y);  
-  valPotAerofrein = analogRead(PORT_POT_AEROFREIN);
-  valPotPalonnier = analogRead(PORT_POT_PALONNIER);
-  // récupère la position des potentiomètres
+  valMancheAxeX = map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 1023, -100, 100);
+  valMancheAxeY = map (analogRead(PORT_POT_MANCHE_AXE_Y), 0, 1023, -100, 100); 
+  valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, -100, 100);
+  valPotPalonnier = map (analogRead(PORT_POT_PALONNIER), 0, 1023, -100, 100);
+  // récupère la position des potentiomètres, après les avoir traduient en valeur de -100 à 100
 }
 
 // fonction qui gère la communication entrante avec Python

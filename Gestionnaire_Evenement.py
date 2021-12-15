@@ -29,6 +29,7 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
     # fonction d'actualisation des potentiomètres
     def actualiseInput():
 
+        global dataCellule
         dataCellule = {}
         # définition d'une bibliothèque qui stockera l'information sur les potentiomètres
 
@@ -38,14 +39,23 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
         for i in range(4):  # répète 4 fois la réception des données pour récupérer les données des 4 potentiomètres
             commande = arduino.read_until().decode('utf-8')  # lit jusqu'à \n et traduit du binaire en utf-8
             if commande[0:3] == 'MAX': # si le message commence par 'MAX', la variable correspond à l'axe x (manche axe x)
-                dataCellule['XaxisValue'] = commande[3:-2]  # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n
+                dataCellule['XaxisValue'] = int(commande[3:-2])  # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n et convertit en entier
             if commande[0:3] == 'MAY': # (manche axe y)
-                dataCellule['YaxisValue'] = commande[3:-2]
+                dataCellule['YaxisValue'] = int(commande[3:-2])
             if commande[0:3] == 'PAL': # (palonnier)
-                dataCellule['ZaxisValue'] = commande[3:-2]
+                dataCellule['ZaxisValue'] = int(commande[3:-2])
             if commande[0:3] == 'AER': # (aerofrein)
-                dataCellule['spoilerValue'] = commande[3:-2]
+                dataCellule['SpoilerValue'] = int(commande[3:-2])
         return dataCellule
+
+
+    def XaxisValue(): return dataCellule['XaxisValue']
+
+    def YaxisValue(): return dataCellule['YaxisValue']
+
+    def ZaxisValue(): return dataCellule['ZaxisValue']
+
+    def SpoilerValue(): return dataCellule['SpoilerValue']
 
 
     # fonction d'actualisation des servomoteurs

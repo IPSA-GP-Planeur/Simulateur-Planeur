@@ -6,18 +6,16 @@ from matplotlib import pyplot as plt
 from matplotlib import axes as ax
 import numpy as np
 
-
-
 ExecutionTime = 0
 TimeStep = 0.1
 
-i = 0 #compteur
+i = 0  # compteur
+
 
 def begin():
     Physics.SetTimeStep(TimeStep)
-    GraphicPane.begin(500,500)
-    WindowEvent.begin(10,0.01)
-
+    GraphicPane.begin(500, 500)
+    WindowEvent.begin()
 
 
 def __main__():
@@ -25,16 +23,17 @@ def __main__():
     global TimeStep
     global A
     global i
-    
-    if(time.time() >= ExecutionTime):
+
+    WindowEvent.actualiseInput()
+
+    if time.time() >= ExecutionTime:
         ExecutionTime = time.time() + TimeStep
- 
-        A = Physics.ExecuteEuler(WindowEvent.YaxisValue)
-        
-  
-    GraphicPane.Display(WindowEvent.YaxisValue,A[3],A[2],A[1],WindowEvent.af)
-    WindowEvent.Actualise()
- 
+
+        A = Physics.ExecuteEuler(WindowEvent.YaxisValue())
+
+    GraphicPane.Display(WindowEvent.YaxisValue(), A[3], A[2], A[1], WindowEvent.SpoilerValue())
+
+
 ''' 
 Test de programme pour afficher graphique en temps réel
 
@@ -49,11 +48,8 @@ Test de programme pour afficher graphique en temps réel
     ax.set_ylim(A[1] + 10)
     plt.show()
 
-'''    
-    
-    
+'''
+
 begin()
 while True:
-    
-    __main__();
-
+    __main__()
