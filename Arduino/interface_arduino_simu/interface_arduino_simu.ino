@@ -1,104 +1,113 @@
-#define PORT_ANEMOMETRE 3
-#define PORT_ALTIMETRE 5
-#define PORT_VARIOMETRE 6
+/* #define remplace une chaine de caractère par une autre chaine de caractère avant la compilation
+ *  ça revient au fonctionnement d'une constante sauf que celle-ci ne prend pas de place en mémoire
+ *  et nous permet de modifier facilement le port sur lequel est branché un composant
+ */
+#define PORT_SERVO_ANEMOMETRE 3 
+#define PORT_SERVO_ALTIMETRE 5
+#define PORT_SERVO_VARIOMETRE 6
+// les ports sur lesquels sont branchés les servomoteurs doivent être compatibles PWM (avoir une ~ à coté du numéro de port)
 
-#define PORT_POT_MANCHE_AXE_1 A0
-#define PORT_POT_MANCHE_AXE_2 A1
+#define PORT_POT_MANCHE_AXE_X A0
+#define PORT_POT_MANCHE_AXE_Y A1
 #define PORT_POT_AEROFREIN A2
 #define PORT_POT_PALONNIER A3
+// les ports sur lesquels sont branchés les potentiomètre doivent être des ports analogiques
 
 
 #include <Servo.h>
+// importe la bibliothèque qui commande les servomoteurs
 
 Servo anemometre;
 Servo altimetre;
 Servo variometre;
+// définie trois fonctions qui utiliseront la bibliothèque Servo
 
-int valPotMancheAxe1;
-int valPotMancheAxe2;
+int valMancheAxeX;
+int valMancheAxeY;
 int valPotAerofrein;
 int valPotPalonnier;
+// déclare les variables pour les potentiomètres (valeur entre 0 et 1023)
 
 
-int valServoAnemometre;
-int valServoAltimetre;
-int valServoVariometre;
+byte valServoAnemometre = 0;
+byte valServoAltimetre = 0;
+byte valServoVariometre = 0;
+// déclare les variables pour les servomoteurs (valeur entre 0 et 255)
 
-String cmd = "";
+String commande = "";
+//déclare la variable qui contiendra temporairement la commande reçue de Python
 
 
+// fonction setup ne s'exécutent qu'une seule fois au démarrage
 void setup() {
   Serial.begin(9600);
-  anemometre.attach(PORT_ANEMOMETRE);
-  altimetre.attach(PORT_ALTIMETRE);
-  variometre.attach(PORT_VARIOMETRE);
+  // démarre la connexion série avec Python
+  
+  anemometre.attach(PORT_SERVO_ANEMOMETRE);
+  altimetre.attach(PORT_SERVO_ALTIMETRE);
+  variometre.attach(PORT_SERVO_VARIOMETRE);
+  // définit les ports reliés aux servomoteurs
 }
 
-
+// fonction qui actualise la valeur des entrées (potentiomètres)
 void inputData() {
-  valPotMancheAxe1 = analogRead(PORT_POT_MANCHE_AXE_1);
-  valPotMancheAxe2 = analogRead(PORT_POT_MANCHE_AXE_2);
+  valMancheAxeX = analogRead(PORT_POT_MANCHE_AXE_X);
+  valMancheAxeY = analogRead(PORT_POT_MANCHE_AXE_Y);  
   valPotAerofrein = analogRead(PORT_POT_AEROFREIN);
   valPotPalonnier = analogRead(PORT_POT_PALONNIER);
+  // récupère la position des potentiomètres
 }
 
-
+// fonction qui gère la communication entrante avec Python
 void comSerialSimu() {
 
   if (Serial.available() > 0) {
+  // check si un message arrive sur le port série
 
-    char SerialInByte = Serial.read();
+    char caractere = Serial.read();
+    // stocke le caractère reçue
 
-    if (SerialInByte == 10) { // 10 valeur ASCII du saut de ligne
-      if (cmd.substring(0, 3) == "ANE") {
-        valServoAnemometre = cmd.substring(3).toInt();
-      } else if (cmd.substring(0, 3) == "ALT") {
-        valServoAltimetre = cmd.substring(3).toInt();
-      } else if (cmd.substring(0, 3) == "VAR") {
-        valServoVariometre = cmd.substring(3).toInt();
-      } else if (cmd.substring(0, 3) == "REL") {
-        exportDataSimu();
+    if (caractere == 10) { // si le caractère est \n (retour à la ligne: 10 en valeur ASCII), le suffixe,  rechercher à quoi correspond le préfixe
+      if (commande.substring(0, 3) == "ANE") { // si le préfixe correspond à "ANE" (anémomètre)
+        valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier 
+      } else if (commande.substring(0, 3) == "ALT") { // (altimètre)
+        valServoAltimetre = commande.substring(3).toInt();
+      } else if (commande.substring(0, 3) == "VAR") { // (variomètre)
+        valServoVariometre = commande.substring(3).toInt();
+      } else if (commande.substring(0, 3) == "REL") { // (reload)
+        exportDataSimu(); // éxecuter la fonction exportDataSimu()
       }
-      cmd = "";
-      Serial.flush();
+      commande = ""; // vider la chaine de caractère
+      Serial.flush(); // vider la memoire d'entrée du port série
     } else {
-      cmd += String(SerialInByte);
+      commande += String(caractere); // si le caractère n'est pas \n, ajouter le caractère à la chaîne de caractère
     }
   }
 }
 
-
+// fonction qui gère la communication sortante avec Python
 void exportDataSimu() {
-  Serial.print("MA1");
-  Serial.println(valPotMancheAxe1);
-  Serial.print("MA2");
-  Serial.println(valPotMancheAxe2);
+  Serial.print("MAX"); // envoie la chaine de caractère préfixe "MAX" (fonction print)
+  Serial.println(valMancheAxeX); // suivie de la variable correspondante et du suffixe "\r\n" (fonction println)
+  Serial.print("MAY");
+  Serial.println(valMancheAxeY);
   Serial.print("PAL");
   Serial.println(valPotPalonnier);
   Serial.print("AER");
   Serial.println(valPotAerofrein);
 }
 
-
+// fonction qui actualise les sorties (servomoteurs)
 void outputData() {
   anemometre.write(valServoAnemometre);
   altimetre.write(valServoAltimetre);
   variometre.write(valServoVariometre);
+  // écrit la position des servomoteurs
 }
 
-/*
-void outputDataDebug() {
-  Serial.print("anemometre ");
-  Serial.print(valServoAnemometre);
-  Serial.print(", altimetre ");
-  Serial.print(valServoAltimetre);
-  Serial.print(", variometre ");
-  Serial.println(valServoVariometre);
-}
-*/
+// fonction loop exécutent en boucle (While True) après le setup
 void loop() {
   inputData();
   comSerialSimu();
   outputData();
-  //outputDataDebug();
 }
