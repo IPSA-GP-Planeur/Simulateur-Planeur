@@ -56,6 +56,11 @@ def Display(positionY,vitesseVerticale,vx_new,h,freins):
     rect_sky=pygame.Rect(0,0,longueur,largeur/2+positionY*3)#déplacement ciel pour passer au premier plan
     
     pygame.draw.rect(window_surface,sky,rect_sky)
+    
+    if h < 100:
+        a = pygame.image.load('accident.png') # charge une image de crsh
+        b = pygame.transform.scale(a, (100,100))    # redimmensionne image
+        window_surface.blit(b, (900,900))     # affiche image
 
     # display text
     
