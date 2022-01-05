@@ -1,8 +1,8 @@
 /* #define remplace une chaine de caractère par une autre chaine de caractère avant la compilation
- *  ça revient au fonctionnement d'une constante sauf que celle-ci ne prend pas de place en mémoire
- *  et nous permet de modifier facilement le port sur lequel est branché un composant
- */
-#define PORT_SERVO_ANEMOMETRE 3 
+    ça revient au fonctionnement d'une constante sauf que celle-ci ne prend pas de place en mémoire
+    et nous permet de modifier facilement le port sur lequel est branché un composant
+*/
+#define PORT_SERVO_ANEMOMETRE 3
 #define PORT_SERVO_ALTIMETRE 5
 #define PORT_SERVO_VARIOMETRE 6
 // les ports sur lesquels sont branchés les servomoteurs doivent être compatibles PWM (avoir une ~ à coté du numéro de port)
@@ -42,7 +42,7 @@ String commande = "";
 void setup() {
   Serial.begin(9600);
   // démarre la connexion série avec Python
-  
+
   anemometre.attach(PORT_SERVO_ANEMOMETRE);
   altimetre.attach(PORT_SERVO_ALTIMETRE);
   variometre.attach(PORT_SERVO_VARIOMETRE);
@@ -51,9 +51,9 @@ void setup() {
 
 // fonction qui actualise la valeur des entrées (potentiomètres)
 void inputData() {
-  valMancheAxeX = map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 1023, -100, 100);
-  valMancheAxeY = map (analogRead(PORT_POT_MANCHE_AXE_Y), 0, 1023, -100, 100); 
-  valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, -100, 100);
+  valMancheAxeX = map (map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 1023, -100, 100), -100, -76, -100, 100);
+  valMancheAxeY = map (map (analogRead(PORT_POT_MANCHE_AXE_Y), 0, 1023, -100, 100), -73, -44, -100, 100);
+  valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, 0, 100);
   valPotPalonnier = map (analogRead(PORT_POT_PALONNIER), 0, 1023, -100, 100);
   // récupère la position des potentiomètres, après les avoir traduient en valeur de -100 à 100
 }
@@ -62,14 +62,14 @@ void inputData() {
 void comSerialSimu() {
 
   if (Serial.available() > 0) {
-  // check si un message arrive sur le port série
+    // check si un message arrive sur le port série
 
     char caractere = Serial.read();
     // stocke le caractère reçue
 
     if (caractere == 10) { // si le caractère est \n (retour à la ligne: 10 en valeur ASCII), le suffixe,  rechercher à quoi correspond le préfixe
       if (commande.substring(0, 3) == "ANE") { // si le préfixe correspond à "ANE" (anémomètre)
-        valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier 
+        valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier
       } else if (commande.substring(0, 3) == "ALT") { // (altimètre)
         valServoAltimetre = commande.substring(3).toInt();
       } else if (commande.substring(0, 3) == "VAR") { // (variomètre)
