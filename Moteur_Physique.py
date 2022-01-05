@@ -79,9 +79,9 @@ def ExecuteEuler(theta):
     
     A = A+h*np.array(A_new)
     #oOn utilise l'approximation d'Euler
-    return A 
+    return A
     #on obtient la matrice A à l'insant t+h
-
+   
 
 
 

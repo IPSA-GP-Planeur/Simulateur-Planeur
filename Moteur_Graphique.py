@@ -7,6 +7,7 @@ longueur = 0
 sky=135,206,235
 dirt=91,60,17
 black = 0, 0, 0
+white = 250,250,250
 arial_font = None
 
 
@@ -40,11 +41,21 @@ def Display(positionY,vitesseVerticale,vx_new,h,freins):
     
     pygame.draw.rect(window_surface,dirt,rect_form)
     
-    rect_sky=pygame.Rect(0,0,longueur,largeur/2+positionY*3)
+    pygame.draw.line(window_surface,black,[0,largeur/2+positionY*3],[longueur,largeur/2+positionY*3],5)
+
+    pygame.draw.line(window_surface,white,[0*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],[5*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],4) #Ajout ligne horizontale haute dépendant de la hauteur
+    pygame.draw.line(window_surface,white,[0*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],[5*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],4) #Ajout ligne horizontale basse dépendant de la hauteur
+
+    pygame.draw.line(window_surface,white,[(2*longueur/14)-250+h/4,largeur/2+positionY*3],[(1*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
+    pygame.draw.line(window_surface,white,[(4*longueur/14)-250+h/4,largeur/2+positionY*3],[(3*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
+    pygame.draw.line(window_surface,white,[(6*longueur/14)-250+h/4,largeur/2+positionY*3],[(5*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
+    pygame.draw.line(window_surface,white,[(8*longueur/14)+250-h/4,largeur/2+positionY*3],[(9*longueur/14)+1000-h,largeur],2)#ligne verticale droite
+    pygame.draw.line(window_surface,white,[(10*longueur/14)+250-h/4,largeur/2+positionY*3],[(11*longueur/14)+1000-h,largeur],2)#ligne verticale droite  
+    pygame.draw.line(window_surface,white,[(12*longueur/14)+250-h/4,largeur/2+positionY*3],[(13*longueur/14)+1000-h,largeur],2)#ligne verticale droite
+    
+    rect_sky=pygame.Rect(0,0,longueur,largeur/2+positionY*3)#déplacement ciel pour passer au premier plan
     
     pygame.draw.rect(window_surface,sky,rect_sky)
-    
-    pygame.draw.line(window_surface,black,[0,largeur/2+positionY*3],[longueur,largeur/2+positionY*3],5)
 
     # display text
     

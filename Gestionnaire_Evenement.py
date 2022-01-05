@@ -48,4 +48,4 @@ def Actualise():           #méthode pour actualiser les actions sur le clavier 
                 
                 if af > 0:
                     af -= afstep #et la touche j pour diminuer
-                    
+            
