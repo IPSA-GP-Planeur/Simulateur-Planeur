@@ -9,6 +9,16 @@ dirt=91,60,17
 black = 0, 0, 0
 white = 250,250,250
 arial_font = None
+def var_color(h):
+    if h > 1000:
+        color = 95, 65, 23
+
+    elif h <=0:
+        color = 255, 255, 255
+        
+    else :
+        color = 255-h*0.159, 255-h*0.19, 255-h*0.232
+    return color
 
 
 def begin(ScreenWidth,ScreenHeight):
@@ -36,32 +46,31 @@ def Display(positionY,vitesseVerticale,vx_new,h,freins):
     global black
     global dirt
     global sky
+    global color
  
     rect_form=pygame.Rect(0,largeur/2+positionY*3,longueur,largeur)
     
     pygame.draw.rect(window_surface,dirt,rect_form)
     
     pygame.draw.line(window_surface,black,[0,largeur/2+positionY*3],[longueur,largeur/2+positionY*3],5)
-
-    pygame.draw.line(window_surface,white,[0*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],[5*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],4) #Ajout ligne horizontale haute dépendant de la hauteur
-    pygame.draw.line(window_surface,white,[0*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],[5*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],4) #Ajout ligne horizontale basse dépendant de la hauteur
-
-    pygame.draw.line(window_surface,white,[(2*longueur/14)-250+h/4,largeur/2+positionY*3],[(1*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
-    pygame.draw.line(window_surface,white,[(4*longueur/14)-250+h/4,largeur/2+positionY*3],[(3*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
-    pygame.draw.line(window_surface,white,[(6*longueur/14)-250+h/4,largeur/2+positionY*3],[(5*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
-    pygame.draw.line(window_surface,white,[(8*longueur/14)+250-h/4,largeur/2+positionY*3],[(9*longueur/14)+1000-h,largeur],2)#ligne verticale droite
-    pygame.draw.line(window_surface,white,[(10*longueur/14)+250-h/4,largeur/2+positionY*3],[(11*longueur/14)+1000-h,largeur],2)#ligne verticale droite  
-    pygame.draw.line(window_surface,white,[(12*longueur/14)+250-h/4,largeur/2+positionY*3],[(13*longueur/14)+1000-h,largeur],2)#ligne verticale droite
     
-    rect_sky=pygame.Rect(0,0,longueur,largeur/2+positionY*3)#déplacement ciel pour passer au premier plan
+    pygame.draw.line(window_surface,var_color(h),[(7*longueur/14)-125+h/8,largeur/2+positionY*3],[(6*longueur/14)-250+h/4,largeur],2)#ligne verticale gauche
+    pygame.draw.line(window_surface,var_color(h),[(7*longueur/14)+125-h/8,largeur/2+positionY*3],[(8*longueur/14)+250-h/4,largeur],2)#ligne verticale droite
+    
+    pygame.draw.line(window_surface,var_color(h),[0*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],[5*longueur/5,(3*largeur/4+positionY*3)-200+0.2*h],4) #Ajout ligne horizontale haute dépendant de la hauteur
+    pygame.draw.line(window_surface,var_color(h),[0*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],[5*longueur/5,(14*largeur/16+positionY*3)+200-0.2*h],4) #Ajout ligne horizontale basse dépendant de la hauteur
+
+
+    pygame.draw.line(window_surface,var_color(h),[(2*longueur/14)-250+h/4,largeur/2+positionY*3],[(-5*longueur/14)-2000+h*2,largeur],2)#ligne verticale gauche  
+    pygame.draw.line(window_surface,var_color(h),[(4*longueur/14)-250+h/4,largeur/2+positionY*3],[(0*longueur/14)-1000+h,largeur],2)#ligne verticale gauche  
+    pygame.draw.line(window_surface,var_color(h),[(6*longueur/14)-250+h/4,largeur/2+positionY*3],[(4*longueur/14)-500+h/2,largeur],2)#ligne verticale gauche
+    pygame.draw.line(window_surface,var_color(h),[(8*longueur/14)+250-h/4,largeur/2+positionY*3],[(10*longueur/14)+500-h/2,largeur],2)#ligne verticale droite
+    pygame.draw.line(window_surface,var_color(h),[(10*longueur/14)+250-h/4,largeur/2+positionY*3],[(14*longueur/14)+1000-h,largeur],2)#ligne verticale droite  
+    pygame.draw.line(window_surface,var_color(h),[(12*longueur/14)+250-h/4,largeur/2+positionY*3],[(19*longueur/14)+2000-h*2,largeur],2)#ligne verticale droite
+
+    rect_sky=pygame.Rect(0,0,longueur,largeur/2+positionY*3)
     
     pygame.draw.rect(window_surface,sky,rect_sky)
-    
-    if h < 100:
-        a = pygame.image.load('accident.png') # charge une image de crsh
-        b = pygame.transform.scale(a, (100,100))    # redimmensionne image
-        window_surface.blit(b, (900,900))     # affiche image
-
     # display text
     
     
