@@ -51,8 +51,8 @@ void setup() {
 
 // fonction qui actualise la valeur des entrées (potentiomètres)
 void inputData() {
-  valMancheAxeX = map (map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 1023, -100, 100), -100, -76, -100, 100);
-  valMancheAxeY = map (map (analogRead(PORT_POT_MANCHE_AXE_Y), 0, 1023, -100, 100), -73, -44, -100, 100);
+  valMancheAxeX = map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 130, -100, 100);
+  valMancheAxeY = map (analogRead(PORT_POT_MANCHE_AXE_Y), 123, 289, -100, 100);
   valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, 0, 100);
   valPotPalonnier = map (analogRead(PORT_POT_PALONNIER), 0, 1023, -100, 100);
   // récupère la position des potentiomètres, après les avoir traduient en valeur de -100 à 100

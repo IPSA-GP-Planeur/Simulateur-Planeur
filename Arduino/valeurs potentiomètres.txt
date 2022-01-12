@@ -1,5 +1,5 @@
-En %(-100,+100):
-	X: -100 à -76 (milieu -90)
-	Y: -73 à -44 en y (milieu -60)
-	Z: 
-	Spoiler: -100 à 100
+Plage sur 10 bits(0-1023):
+	X: 0 à 130
+	Y: 123 à 289
+	Z:
+	Spoiler: 0 à 1023
