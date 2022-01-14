@@ -1,67 +1,54 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May 14 10:42:38 2021
-
-@author: thoma
-"""
-
-
 import pygame
-YaxisValue=0 #valeur initiale de theta
-axis_value=[0 for i in range(5)] #liste contenant les valeurs de chaque axe du joystick
-joysticks=[] 
-offset=[0 for i in range(5)] #liste de valeurs bruts récupérées sur les axes
-pygame.joystick.init()
 
-def begin(RepeatFrequency,step):
-    global YaxisStep 
+# le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
+
+
+YaxisStep = 10  # valeur de l'incrément a chaque pression sur la fleche
+YaxisValue = 0  # valeur de l'assiete initiale
+
+SpoilerValue = 0
+afstep = 1
+
+
+def begin(RepeatFrequency, step):
+    global YaxisStep
     YaxisStep = step
     pygame.key.set_repeat(RepeatFrequency)
-    
-af=0 #valeur initiale des aérofreins
-afstep = 1 #valeur de l'incrément à chaque pression de la touche
 
 
-for i in range(pygame.joystick.get_count()):
-    joysticks.append(pygame.joystick.Joystick(i))
-    joysticks[-1].init()
+def Actualise():  # méthode pour actualiser les actions sur le clavier et la fenetre
+
+    for i in range(pygame.joystick.get_count()):
+        joysticks.append(pygame.joystick.Joystick(i))
+        joysticks[-1].init()
     
-for i in range (5): #cette boucle devrait récupérer la valeur initiale au repos (ne fonctionne pas)
-    offset[i]=joysticks[0].get_axis(i) 
+    for i in range (5): #cette boucle devrait récupérer la valeur initiale au repos (ne fonctionne pas)
+        offset[i]=joysticks[0].get_axis(i)
     
 def Actualise():
     global YaxisValue
-    global af
-    global offset
-    global joysticks
-    global axis_value
-    
+    global SpoilerValue
+    # On récupère les valeurs de l'assiette et des aérofreins
+
     for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            pygame.quit()
-        if event.type==pygame.JOYAXISMOTION:
-            for i in range (5):
-                axis_value[i]=joysticks[0].get_axis(i) - offset[i]
-                if axis_value[2]>0.1:
-                    YaxisValue += axis_value[2]/200
-                if axis_value[2]<-0.1:
-                    YaxisValue += axis_value[2]/200
-                if axis_value[4]>0.98:
-                    af = 0
-                if axis_value[4]<0.98 :
-                    freins = (axis_value[4] + 1)/2
-                    pourcentage = 1 - freins
-                    if af <= 100 :
-                        af = 100 * pourcentage
-        if event.type == pygame.KEYDOWN :
-            # if event.key == pygame.K_h :
-            #     if af < 100 :
-            #         af += afstep #idem pour les aérofreins avec la touche h pour augmenter
-            # if event.key == pygame.K_j:
-            #     if af > 0:
-            #         af -= afstep #et la touche j pour diminuer
-            if event.key == pygame.K_ESCAPE :
-                pygame.quit() #la touche échap permet de quitter le simulateur
-    
-           
-    
+        # attribue a des actions de l'utilisateur une réponse du programme
+        if event.type == pygame.QUIT:
+            pygame.quit()  # échap => quitter le programme
+
+        if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_UP:
+                YaxisValue -= YaxisStep  # pour chaque pression sur la touche on diminue la valeur de theta
+
+            if event.key == pygame.K_DOWN:
+                YaxisValue += YaxisStep  # on augmente sa valeur
+
+            if event.key == pygame.K_h:
+
+                if SpoilerValue < 100:
+                    SpoilerValue += afstep  # idem pour les aérofreins avec la touche h pour augmenter
+
+            if event.key == pygame.K_j:
+
+                if SpoilerValue > 0:
+                    SpoilerValue -= afstep  # et la touche j pour diminuer
