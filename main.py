@@ -2,39 +2,34 @@ import Gestionnaire_Evenement as WindowEvent
 import Moteur_Graphique as GraphicPane
 import Moteur_Physique as Physics
 import time
-from matplotlib import pyplot as plt
-from matplotlib import axes as ax
-import numpy as np
 
-
-
-ExecutionTime = 0
+ExecutionTime = time.time()
 TimeStep = 0.1
 
-i = 0 #compteur
+planeur = {"Y": 0, "Z": 1000, "Vy": 30, "Vz": -1}
+
+
+# i = 0 #compteur
+
 
 def begin():
-    Physics.SetTimeStep(TimeStep)
-    GraphicPane.begin(500,500)
-    WindowEvent.begin(10,0.01)
-
+    GraphicPane.begin(500, 500)
+    WindowEvent.begin(10, 0.01)
 
 
 def __main__():
     global ExecutionTime
     global TimeStep
-    global A
-    global i
-    
-    if(time.time() >= ExecutionTime):
-        ExecutionTime = time.time() + TimeStep
- 
-        A = Physics.ExecuteEuler(WindowEvent.YaxisValue)
-        
-  
-    GraphicPane.Display(WindowEvent.YaxisValue,A[3],A[2],A[1],WindowEvent.af)
+    global planeur
+
+    if time.time() >= ExecutionTime:
+        ExecutionTime += TimeStep
+        planeur = Physics.ExecuteEuler(WindowEvent.YaxisValue, WindowEvent.SpoilerValue, planeur, TimeStep)
+
+    GraphicPane.Display(WindowEvent.YaxisValue, planeur, WindowEvent.SpoilerValue)
     WindowEvent.Actualise()
- 
+
+
 ''' 
 Test de programme pour afficher graphique en temps réel
 
@@ -49,11 +44,8 @@ Test de programme pour afficher graphique en temps réel
     ax.set_ylim(A[1] + 10)
     plt.show()
 
-'''    
-    
-    
+'''
+
 begin()
 while True:
-    
-    __main__();
-
+    __main__()
