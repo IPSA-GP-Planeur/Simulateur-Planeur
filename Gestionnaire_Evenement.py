@@ -2,11 +2,10 @@ import pygame
 
 # le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
 
+commandePlaneur = {"Y": 0, "Spoiler": 0}
 
-YaxisStep = 10  # valeur de l'incrément a chaque pression sur la fleche
 YaxisValue = 0  # valeur de l'assiete initiale
 
-SpoilerValue = 0
 afstep = 1
 
 
@@ -18,8 +17,7 @@ def begin(RepeatFrequency, step):
 
 def Actualise():  # méthode pour actualiser les actions sur le clavier et la fenetre
 
-    global YaxisValue
-    global SpoilerValue
+    global commandePlaneur
     # On récupère les valeurs de l'assiette et des aérofreins
 
     for event in pygame.event.get():
@@ -30,17 +28,18 @@ def Actualise():  # méthode pour actualiser les actions sur le clavier et la fe
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_UP:
-                YaxisValue -= YaxisStep  # pour chaque pression sur la touche on diminue la valeur de theta
+                commandePlaneur["Y"] -= YaxisStep  # pour chaque pression sur la touche on diminue la valeur de theta
 
             if event.key == pygame.K_DOWN:
-                YaxisValue += YaxisStep  # on augmente sa valeur
+                commandePlaneur["Y"] += YaxisStep  # on augmente sa valeur
 
             if event.key == pygame.K_h:
 
-                if SpoilerValue < 100:
-                    SpoilerValue += afstep  # idem pour les aérofreins avec la touche h pour augmenter
+                if commandePlaneur["Spoiler"] < 100:
+                    commandePlaneur["Spoiler"] += afstep  # idem pour les aérofreins avec la touche h pour augmenter
 
             if event.key == pygame.K_j:
 
-                if SpoilerValue > 0:
-                    SpoilerValue -= afstep  # et la touche j pour diminuer
+                if commandePlaneur["Spoiler"] > 0:
+                    commandePlaneur["Spoiler"] -= afstep  # et la touche j pour diminuer
+    return commandePlaneur

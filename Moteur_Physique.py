@@ -24,13 +24,13 @@ def Cx(alpha, aerofrein):
     return 0.03 + 0.01 * (Cz(alpha) ** 2) * (1 + 7 * (aerofrein / 100))
 
 
-def ExecuteEuler(theta, aerofrein, planeur, h):
+def ExecuteEuler(commandePlaneur, planeur, h):
     # méthode d'Euler renvoyant la matrice A à l'instant t+h
 
     gamma = np.arctan(planeur["Vz"] / planeur["Vy"]) * 180 / np.pi
 
     # incidence, angle entre l'horizon et Va, dépend des vitesses Vx et Vy
-    alpha = (theta - gamma)
+    alpha = (commandePlaneur["Y"] - gamma)
 
     # angle entre Va et l'axe horizontal de l'avion, dépend de theta défini par l'utilisateur
 
@@ -38,9 +38,9 @@ def ExecuteEuler(theta, aerofrein, planeur, h):
     # on calcule la vitesse Va comme la norme de (Vx,Vy)
 
     Ay = (1 / m) * 0.5 * rho * S * (normeV ** 2) * (
-        (Cz(alpha) * np.sin((-gamma) / 360 * 2 * np.pi) - Cx(alpha, aerofrein) * np.cos((-gamma) / 360 * 2 * np.pi)))
+        (Cz(alpha) * np.sin((-gamma) / 360 * 2 * np.pi) - Cx(alpha, commandePlaneur["Spoiler"]) * np.cos((-gamma) / 360 * 2 * np.pi)))
     Az = (1 / m) * (0.5 * rho * S * (normeV ** 2) * (
-        (Cz(alpha) * np.cos((-gamma) / 360 * 2 * np.pi) + Cx(alpha, aerofrein) * np.sin(
+        (Cz(alpha) * np.cos((-gamma) / 360 * 2 * np.pi) + Cx(alpha, commandePlaneur["Spoiler"]) * np.sin(
             (-gamma) / 360 * 2 * np.pi))) - m * g)
     # on calcule les accélérations ay et az d'après les équations du PFD
 
