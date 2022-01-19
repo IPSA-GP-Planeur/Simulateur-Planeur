@@ -24,7 +24,7 @@ def begin(ScreenWidth, ScreenHeight):
     arial_font = pygame.font.SysFont("arial", 30)
 
 
-def Display(mancheY, planeur, freins):
+def Display(commandePlaneur, planeur):
     global window_surface
     global largeur
     global longueur
@@ -34,23 +34,23 @@ def Display(mancheY, planeur, freins):
     global dirt
     global sky
 
-    rect_form = pygame.Rect(0, largeur / 2 + mancheY * 3, longueur, largeur)
+    rect_form = pygame.Rect(0, largeur / 2 + commandePlaneur["Y"] * 3, longueur, largeur)
 
     pygame.draw.rect(window_surface, dirt, rect_form)
 
-    rect_sky = pygame.Rect(0, 0, longueur, largeur / 2 + mancheY * 3)
+    rect_sky = pygame.Rect(0, 0, longueur, largeur / 2 + commandePlaneur["Y"] * 3)
 
     pygame.draw.rect(window_surface, sky, rect_sky)
 
-    pygame.draw.line(window_surface, black, [0, largeur / 2 + mancheY * 3], [longueur, largeur / 2 + mancheY * 3],
+    pygame.draw.line(window_surface, black, [0, largeur / 2 + commandePlaneur["Y"] * 3], [longueur, largeur / 2 + commandePlaneur["Y"] * 3],
                      5)
 
     # display text
     vitesse_verticale = arial_font.render('Vz : {:.2f} m/s'.format(planeur["Vz"]), True, (0, 0, 0))
     vitesse_horizontal = arial_font.render('Vh : {:.2f} km/h'.format(planeur["Vy"] * 3, 6), True, (0, 0, 0))
-    assiette = arial_font.render('θ: {:.2f}°'.format(mancheY), True, (0, 0, 0))
+    assiette = arial_font.render('θ: {:.2f}°'.format(commandePlaneur["Y"]), True, (0, 0, 0))
     Haltitude = arial_font.render('H : {:.2f} m'.format(planeur["Z"]), True, (0, 0, 0))
-    aerofreins = arial_font.render('af: {:.2f}%'.format(freins), True, (0, 0, 0))
+    aerofreins = arial_font.render('af: {:.2f}%'.format(commandePlaneur["Spoiler"]), True, (0, 0, 0))
     finesse = arial_font.render('f: {:.2f}'.format(abs(planeur["Vy"] / planeur["Vz"])), True, (0, 0, 0))
 
     window_surface.blit(vitesse_verticale, (30, 30))

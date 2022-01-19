@@ -2,10 +2,10 @@ import pygame
 
 #le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
 
-YaxisStep = 10             #valeur de l'incrément a chaque pression sur la fleche
-YaxisValue = 0            #valeur de l'assiete initiale
+commandePlaneur = {"Y": 0, "Spoiler": 0}
 
-af=0
+YaxisValue = 0  # valeur de l'assiete initiale
+
 afstep = 1
 
 def begin(RepeatFrequency,step):
@@ -15,10 +15,9 @@ def begin(RepeatFrequency,step):
     
 def Actualise():           #méthode pour actualiser les actions sur le clavier et la fenetre
 
-    global YaxisValue
-    global af
-    #On récupère les valeurs de l'assiette et des aérofreins
-    
+    global commandePlaneur
+    # On récupère les valeurs de l'assiette et des aérofreins
+
     for event in pygame.event.get():
         #attribue a des actions de l'utilisateur une réponse du programme
         if event.type == pygame.QUIT:
@@ -28,18 +27,18 @@ def Actualise():           #méthode pour actualiser les actions sur le clavier 
         if event.type == pygame.KEYDOWN:
             
             if event.key == pygame.K_UP:
-                YaxisValue -= YaxisStep #pour chaque pression sur la touche on diminue la valeur de theta
-                    
+                commandePlaneur["Y"] -= YaxisStep  # pour chaque pression sur la touche on diminue la valeur de theta
+
             if event.key == pygame.K_DOWN:
-                YaxisValue += YaxisStep #on augmente sa valeur 
-           
+                commandePlaneur["Y"] += YaxisStep  # on augmente sa valeur
+
             if event.key == pygame.K_h:
-                
-                if af < 100 :
-                    af += afstep #idem pour les aérofreins avec la touche h pour augmenter
-                
+
+                if commandePlaneur["Spoiler"] < 100:
+                    commandePlaneur["Spoiler"] += afstep  # idem pour les aérofreins avec la touche h pour augmenter
+
             if event.key == pygame.K_j:
-                
-                if af > 0:
-                    af -= afstep #et la touche j pour diminuer
-            
+
+                if commandePlaneur["Spoiler"] > 0:
+                    commandePlaneur["Spoiler"] -= afstep  # et la touche j pour diminuer
+    return commandePlaneur

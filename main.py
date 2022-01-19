@@ -22,12 +22,13 @@ def __main__():
     global TimeStep
     global planeur
 
+    commandePlaneur = WindowEvent.Actualise()
+
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
-        planeur = Physics.ExecuteEuler(WindowEvent.YaxisValue, WindowEvent.SpoilerValue, planeur, TimeStep)
+        planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
 
-    GraphicPane.Display(WindowEvent.YaxisValue, planeur, WindowEvent.SpoilerValue)
-    WindowEvent.Actualise()
+    GraphicPane.Display(commandePlaneur, planeur)
 
 
 ''' 
