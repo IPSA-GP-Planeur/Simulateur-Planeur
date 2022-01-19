@@ -3,8 +3,9 @@
     et nous permet de modifier facilement le port sur lequel est branché un composant
 */
 #define PORT_SERVO_ANEMOMETRE 3
-#define PORT_SERVO_ALTIMETRE 5
-#define PORT_SERVO_VARIOMETRE 6
+#define PORT_SERVO_ALTIMETRE1 5
+#define PORT_SERVO_ALTIMETRE2 6
+#define PORT_SERVO_VARIOMETRE 9
 // les ports sur lesquels sont branchés les servomoteurs doivent être compatibles PWM (avoir une ~ à coté du numéro de port)
 
 #define PORT_POT_MANCHE_AXE_X A0
@@ -18,7 +19,8 @@
 // importe la bibliothèque qui commande les servomoteurs
 
 Servo anemometre;
-Servo altimetre;
+Servo altimetre1;
+Servo altimetre2;
 Servo variometre;
 // définie trois fonctions qui utiliseront la bibliothèque Servo
 
@@ -30,7 +32,8 @@ int valPotPalonnier;
 
 
 byte valServoAnemometre = 0;
-byte valServoAltimetre = 0;
+byte valServoAltimetre1 = 0;
+byte valServoAltimetre2 = 0;
 byte valServoVariometre = 0;
 // déclare les variables pour les servomoteurs (valeur entre 0 et 255)
 
@@ -44,7 +47,8 @@ void setup() {
   // démarre la connexion série avec Python
 
   anemometre.attach(PORT_SERVO_ANEMOMETRE);
-  altimetre.attach(PORT_SERVO_ALTIMETRE);
+  altimetre1.attach(PORT_SERVO_ALTIMETRE1);
+  altimetre2.attach(PORT_SERVO_ALTIMETRE2);
   variometre.attach(PORT_SERVO_VARIOMETRE);
   // définit les ports reliés aux servomoteurs
 }
@@ -71,7 +75,8 @@ void comSerialSimu() {
       if (commande.substring(0, 3) == "ANE") { // si le préfixe correspond à "ANE" (anémomètre)
         valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier
       } else if (commande.substring(0, 3) == "ALT") { // (altimètre)
-        valServoAltimetre = commande.substring(3).toInt();
+        valServoAltimetre1 = commande.substring(3).toInt();
+        valServoAltimetre2 = commande.substring((commande.length()) - 3).toInt(); // ne prend en compte que les 3 derniers chiffres du nombre réprésentant l'altitude
       } else if (commande.substring(0, 3) == "VAR") { // (variomètre)
         valServoVariometre = commande.substring(3).toInt();
       } else if (commande.substring(0, 3) == "REL") { // (reload)
@@ -99,9 +104,10 @@ void exportDataSimu() {
 
 // fonction qui actualise les sorties (servomoteurs)
 void outputData() {
-  anemometre.write(valServoAnemometre);
-  altimetre.write(valServoAltimetre);
-  variometre.write(valServoVariometre);
+  anemometre.write(map(valServoAnemometre, 0, 0, 0, 180));  //insérer la plage d'entrée en m/s de Vy
+  altimetre1.write(map(valServoAltimetre1, 0, 0, 0, 180));  //insérer la plage d'entrée en m de z
+  altimetre2.write(map(valServoAltimetre2, 0, 999, 0, 180));  
+  variometre.write(map(valServoVariometre, 0, 0, 0, 180));  //insérer la plage d'entrée en m/s de Vz
   // écrit la position des servomoteurs
 }
 

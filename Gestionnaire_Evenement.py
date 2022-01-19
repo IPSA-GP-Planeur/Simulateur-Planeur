@@ -24,12 +24,10 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
 
         arduino.open()  # ouverture de la communication série avec l'Arduino (ce qui le fait reboot)
         sleep(2)  # attendre 2 sec que l'Arduino reboot
-        return
 
     # fonction d'actualisation des potentiomètres
     def actualiseInput():
 
-        global dataCellule
         dataCellule = {}
         # définition d'une bibliothèque qui stockera l'information sur les potentiomètres
 
@@ -39,36 +37,36 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
         for i in range(4):  # répète 4 fois la réception des données pour récupérer les données des 4 potentiomètres
             commande = arduino.read_until().decode('utf-8')  # lit jusqu'à \n et traduit du binaire en utf-8
             if commande[0:3] == 'MAX': # si le message commence par 'MAX', la variable correspond à l'axe x (manche axe x)
-                dataCellule['XaxisValue'] = int(commande[3:-2])  # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n et convertit en entier
+                dataCellule['X'] = int(commande[3:-2])  # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n et convertit en entier
             if commande[0:3] == 'MAY': # (manche axe y)
-                dataCellule['YaxisValue'] = int(commande[3:-2])
+                dataCellule['Y'] = int(commande[3:-2])
             if commande[0:3] == 'PAL': # (palonnier)
-                dataCellule['ZaxisValue'] = int(commande[3:-2])
+                dataCellule['Z'] = int(commande[3:-2])
             if commande[0:3] == 'AER': # (aerofrein)
-                dataCellule['SpoilerValue'] = int(commande[3:-2])
+                dataCellule['Spoiler'] = int(commande[3:-2])
+
         return dataCellule
 
+    '''
+    def XaxisValue(): return dataCellule['X']
 
-    def XaxisValue(): return dataCellule['XaxisValue']
+    def YaxisValue(): return dataCellule['Y']
 
-    def YaxisValue(): return dataCellule['YaxisValue']
+    def ZaxisValue(): return dataCellule['Z']
 
-    def ZaxisValue(): return dataCellule['ZaxisValue']
-
-    def SpoilerValue(): return dataCellule['SpoilerValue']
-
+    def SpoilerValue(): return dataCellule['Spoiler']
+    '''
 
     # fonction d'actualisation des servomoteurs
-    def actualiseOutput(anemometre, altimetre, variometre):
+    def actualiseOutput(planeur):
         arduino.write(b'ANE')
-        arduino.write(str(anemometre).encode('utf-8'))
+        arduino.write(str(planeur["Vy"]).encode('utf-8'))
         arduino.write(b'\nALT')
-        arduino.write(str(altimetre).encode('utf-8'))
+        arduino.write(str(planeur["Z"]).encode('utf-8'))
         arduino.write(b'\nVAR')
-        arduino.write(str(variometre).encode('utf-8'))
+        arduino.write(str(planeur["Vz"]).encode('utf-8'))
         arduino.write(b'\n')
         # envoie chaque variable avec un préfixe qui permet de la reconnaître et un suffixe '\n' qui signifie la fin du message
-        return
 
 
 """
@@ -77,9 +75,9 @@ Utilisation:
 begin() est a appelé une fois au début pour connecter l'arduino (attention y a un délai de 2 secondes 
 qui est nécessaire)
 
-actualiseInput() retourne un dictionnaire avec comme clé XaxisValue YaxisValue ZaxisValue et spoilerValue 
-avec des valeurs entre 0 et 1023
+actualiseInput() retourne un dictionnaire avec comme clé X Y Z et Spoiler 
+avec des valeurs entre 0 et 100
 
-actualiseOutput(anemometre, altimetre, variometre) prend 3 paramètres qui comme leurs noms l'indique
-sont la position de l'aiguille pour chaque instrument (valeur entre 0 et 255)
+actualiseOutput(planeur) prend 1 paramètre qui contient un dictionnaire avec l'altitude, 
+la vitesse horizontal et la vitesse verticale
 """

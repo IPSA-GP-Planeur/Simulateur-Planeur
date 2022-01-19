@@ -14,7 +14,7 @@ planeur = {"Y": 0, "Z": 1000, "Vy": 30, "Vz": -1}
 
 def begin():
     GraphicPane.begin(500, 500)
-    WindowEvent.begin(10, 0.01)
+    WindowEvent.begin()
 
 
 def __main__():
@@ -22,12 +22,15 @@ def __main__():
     global TimeStep
     global planeur
 
+    commandePlaneur = WindowEvent.actualiseInput()
+
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
-        planeur = Physics.ExecuteEuler(WindowEvent.YaxisValue, WindowEvent.SpoilerValue, planeur, TimeStep)
+        planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
 
-    GraphicPane.Display(WindowEvent.YaxisValue, planeur, WindowEvent.SpoilerValue)
-    WindowEvent.Actualise()
+    GraphicPane.Display(commandePlaneur, planeur)
+
+    WindowEvent.actualiseOutput(planeur)
 
 
 ''' 
