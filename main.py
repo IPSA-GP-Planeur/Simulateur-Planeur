@@ -6,8 +6,6 @@ from matplotlib import pyplot as plt
 from matplotlib import axes as ax
 import numpy as np
 
-
-
 ExecutionTime = 0
 TimeStep = 0.1
 
@@ -17,8 +15,6 @@ def begin():
     Physics.SetTimeStep(TimeStep)
     GraphicPane.begin(1000,1000)
     WindowEvent.begin(10,0.01)
-
-
 
 def __main__():
     global ExecutionTime

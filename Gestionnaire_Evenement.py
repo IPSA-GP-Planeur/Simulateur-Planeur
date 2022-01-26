@@ -1,9 +1,6 @@
 import pygame
 
-
 #le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
-
-
 
 YaxisStep = 10             #valeur de l'incrément a chaque pression sur la fleche
 YaxisValue = 0            #valeur de l'assiete initiale
@@ -11,12 +8,10 @@ YaxisValue = 0            #valeur de l'assiete initiale
 af=0
 afstep = 1
 
-
 def begin(RepeatFrequency,step):
     global YaxisStep 
     YaxisStep = step
     pygame.key.set_repeat(RepeatFrequency)
-    
     
 def Actualise():           #méthode pour actualiser les actions sur le clavier et la fenetre
 
@@ -36,7 +31,6 @@ def Actualise():           #méthode pour actualiser les actions sur le clavier 
                 YaxisValue -= YaxisStep #pour chaque pression sur la touche on diminue la valeur de theta
                     
             if event.key == pygame.K_DOWN:
-             
                 YaxisValue += YaxisStep #on augmente sa valeur 
            
             if event.key == pygame.K_h:
