@@ -104,10 +104,10 @@ void exportDataSimu() {
 
 // fonction qui actualise les sorties (servomoteurs)
 void outputData() {
-  anemometre.write(map(valServoAnemometre, 0, 0, 0, 180));  //insérer la plage d'entrée en m/s de Vy
-  altimetre1.write(map(valServoAltimetre1, 0, 0, 0, 180));  //insérer la plage d'entrée en m de z
+  anemometre.write(map(valServoAnemometre, -999, 999, 0, 180));  //insérer la plage d'entrée en m/s de Vy
+  altimetre1.write(map(valServoAltimetre1, 0, 9999, 0, 180));  //insérer la plage d'entrée en m de z
   altimetre2.write(map(valServoAltimetre2, 0, 999, 0, 180));  
-  variometre.write(map(valServoVariometre, 0, 0, 0, 180));  //insérer la plage d'entrée en m/s de Vz
+  variometre.write(map(valServoVariometre, -25, 25, 0, 180));  //insérer la plage d'entrée en m/s de Vz
   // écrit la position des servomoteurs
 }
 
