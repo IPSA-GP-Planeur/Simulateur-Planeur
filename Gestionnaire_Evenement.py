@@ -60,13 +60,14 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
     # fonction d'actualisation des servomoteurs
     def actualiseOutput(planeur):
         arduino.write(b'ANE')
-        arduino.write(str(planeur["Vy"]).encode('utf-8'))
+        arduino.write(str(round(planeur["Vy"])).encode('utf-8'))
         arduino.write(b'\nALT')
-        arduino.write(str(planeur["Z"]).encode('utf-8'))
+        arduino.write(str(round(planeur["Z"])).encode('utf-8'))
         arduino.write(b'\nVAR')
-        arduino.write(str(planeur["Vz"]).encode('utf-8'))
+        arduino.write(str(round(planeur["Vz"])).encode('utf-8'))
         arduino.write(b'\n')
         # envoie chaque variable avec un préfixe qui permet de la reconnaître et un suffixe '\n' qui signifie la fin du message
+        # round arrondie à l'unité pour éviter des dépassements de variables sur l'arduino
 
 
 """
