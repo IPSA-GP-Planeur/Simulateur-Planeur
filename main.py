@@ -1,4 +1,4 @@
-import Gestionnaire_Evenement as WindowEvent 
+import Gestionnaire_Evenement as WindowEvent
 import Moteur_Graphique as GraphicPane
 import Moteur_Physique as Physics
 import time
@@ -8,8 +8,7 @@ TimeStep = 0.1
 
 planeur = {"Y": 0, "Z": 1000, "Vy": 30, "Vz": -1}
 
-
-# i = 0 #compteur
+i = 0  # compteur
 
 
 def begin():
@@ -21,14 +20,19 @@ def __main__():
     global ExecutionTime
     global TimeStep
     global planeur
+    global T
 
     commandePlaneur = WindowEvent.Actualise()
 
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
-        planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
 
-    GraphicPane.Display(commandePlaneur, planeur)
+        planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
+        T = GraphicPane.Intersection(planeur, WindowEvent.YaxisValue)
+
+    GraphicPane.Display(commandePlaneur, planeur, T)
+    WindowEvent.Actualise()
+
 
 
 ''' 
@@ -42,10 +46,9 @@ Test de programme pour afficher graphique en temps réel
     ax.set_xlim(A[0] + 10)
     ax.set_ylim(A[1] + 10)
     plt.show()
-'''    
-    
-    
+'''
+
+
 begin()
 while True:
-    
-    __main__();
+    __main__()
