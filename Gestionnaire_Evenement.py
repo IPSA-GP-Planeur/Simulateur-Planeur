@@ -2,7 +2,7 @@ import pygame
 
 # le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
 
-commandePlaneur = {"Y": 0, "Spoiler": 0}
+commandePlaneur = {"X": 0, "Y": 0, "Spoiler": 0}
 
 YaxisValue = 0  # valeur de l'assiete initiale
 
