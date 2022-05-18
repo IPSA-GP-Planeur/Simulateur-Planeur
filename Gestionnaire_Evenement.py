@@ -48,6 +48,7 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
                 dataCellule['SpoilerValue'] = int(commande[3:-2])
         return dataCellule
 
+commandePlaneur = {"X": 0, "Y": 0, "Spoiler": 0}
 
     def XaxisValue(): return dataCellule['XaxisValue']
 
