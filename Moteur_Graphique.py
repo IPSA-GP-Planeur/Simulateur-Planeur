@@ -40,12 +40,12 @@ def Display(commandePlaneur, planeur):
 
     pygame.draw.rect(window_surface, sky, rect_sky)
 
-    pygame.draw.line(window_surface, black, [0, largeur / 2 + commandePlaneur["Y"] * 3], [longueur, largeur / 2 + commandePlaneur["Y"] * 3],
-                     5)
+    pygame.draw.line(window_surface, black, [0, largeur / 2 + commandePlaneur["Y"] * 3],
+                     [longueur, largeur / 2 + commandePlaneur["Y"] * 3], 5)
 
     # display text
     vitesse_verticale = arial_font.render('Vz : {:.2f} m/s'.format(planeur["Vz"]), True, (0, 0, 0))
-    vitesse_horizontal = arial_font.render('Vh : {:.2f} km/h'.format(planeur["Vy"] * 3, 6), True, (0, 0, 0))
+    vitesse_horizontal = arial_font.render('Vh : {:.2f} km/h'.format(planeur["Vy"] * 3.6), True, (0, 0, 0))
     assiette = arial_font.render('θ: {:.2f}°'.format(commandePlaneur["Y"]), True, (0, 0, 0))
     Haltitude = arial_font.render('H : {:.2f} m'.format(planeur["Z"]), True, (0, 0, 0))
     aerofreins = arial_font.render('af: {:.2f}%'.format(commandePlaneur["Spoiler"]), True, (0, 0, 0))
@@ -59,19 +59,3 @@ def Display(commandePlaneur, planeur):
     window_surface.blit(finesse, (300, 30))
 
     pygame.display.flip()
-
-
-'''
----------------------------------------------------------------------
-Ca sert à quoi?
----------------------------------------------------------------------
-def display(a, b, c, d):
-    global window_surface
-
-    window_surface.fill((255, 255, 255))
-
-    window_surface.fill((0, 255, 0), rect=[0, 0, 500, 250])
-
-    window_surface.fill((255, 0, 0), rect=[0, 250, 500, 250])
-    pygame.display.update()
-'''

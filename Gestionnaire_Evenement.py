@@ -12,10 +12,10 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
 
         for port in available_ports:
             if "Arduino" in port.description:
-                portArduino= port.name
+                portArduino = port.name
                 # récupère le port où est connecté l'Arduino
 
-        arduino.baudrate = 9600
+        arduino.baudrate = 57600
         arduino.port = portArduino
         arduino.bytesize = serial.EIGHTBITS
         arduino.parity = serial.PARITY_NONE
@@ -24,6 +24,7 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
 
         arduino.open()  # ouverture de la communication série avec l'Arduino (ce qui le fait reboot)
         sleep(2)  # attendre 2 sec que l'Arduino reboot
+
 
     # fonction d'actualisation des potentiomètres
     def actualiseInput():
@@ -36,35 +37,27 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
 
         for i in range(4):  # répète 4 fois la réception des données pour récupérer les données des 4 potentiomètres
             commande = arduino.read_until().decode('utf-8')  # lit jusqu'à \n et traduit du binaire en utf-8
-            if commande[0:3] == 'MAX': # si le message commence par 'MAX', la variable correspond à l'axe x (manche axe x)
-                dataCellule['X'] = int(commande[3:-2])  # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n et convertit en entier
-            if commande[0:3] == 'MAY': # (manche axe y)
+            if commande[0:3] == 'MAX':
+                # si le message commence par 'MAX', la variable correspond à l'axe x (manche axe x)
+                dataCellule['X'] = int(commande[3:-2])
+                # supprime le \r en fin de commande dû au println en arduino, ex cmd: MAX42\r\n et convertit en entier
+            if commande[0:3] == 'MAY':  # (manche axe y)
                 dataCellule['Y'] = int(commande[3:-2])
-            if commande[0:3] == 'PAL': # (palonnier)
+            if commande[0:3] == 'PAL':  # (palonnier)
                 dataCellule['Z'] = int(commande[3:-2])
-            if commande[0:3] == 'AER': # (aerofrein)
+            if commande[0:3] == 'AER':  # (aerofrein)
                 dataCellule['Spoiler'] = int(commande[3:-2])
-
         return dataCellule
 
-    '''
-    def XaxisValue(): return dataCellule['X']
-
-    def YaxisValue(): return dataCellule['Y']
-
-    def ZaxisValue(): return dataCellule['Z']
-
-    def SpoilerValue(): return dataCellule['Spoiler']
-    '''
 
     # fonction d'actualisation des servomoteurs
     def actualiseOutput(planeur):
         arduino.write(b'ANE')
-        arduino.write(str(round(planeur["Vy"])).encode('utf-8'))
+        arduino.write(str(round(planeur["Vy"] * 3.6)).encode('utf-8')) # affichage en km/h
         arduino.write(b'\nALT')
-        arduino.write(str(round(planeur["Z"])).encode('utf-8'))
+        arduino.write(str(round(planeur["Z"])).encode('utf-8')) # affichage en m
         arduino.write(b'\nVAR')
-        arduino.write(str(round(planeur["Vz"])).encode('utf-8'))
+        arduino.write(str(round(planeur["Vz"] * 10)).encode('utf-8')) # affichage en décamètre
         arduino.write(b'\n')
         # envoie chaque variable avec un préfixe qui permet de la reconnaître et un suffixe '\n' qui signifie la fin du message
         # round arrondie à l'unité pour éviter des dépassements de variables sur l'arduino

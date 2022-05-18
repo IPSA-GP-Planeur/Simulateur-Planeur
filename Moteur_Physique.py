@@ -38,7 +38,8 @@ def ExecuteEuler(commandePlaneur, planeur, h):
     # on calcule la vitesse Va comme la norme de (Vx,Vy)
 
     Ay = (1 / m) * 0.5 * rho * S * (normeV ** 2) * (
-        (Cz(alpha) * np.sin((-gamma) / 360 * 2 * np.pi) - Cx(alpha, commandePlaneur["Spoiler"]) * np.cos((-gamma) / 360 * 2 * np.pi)))
+        (Cz(alpha) * np.sin((-gamma) / 360 * 2 * np.pi) - Cx(alpha, commandePlaneur["Spoiler"]) * np.cos(
+            (-gamma) / 360 * 2 * np.pi)))
     Az = (1 / m) * (0.5 * rho * S * (normeV ** 2) * (
         (Cz(alpha) * np.cos((-gamma) / 360 * 2 * np.pi) + Cx(alpha, commandePlaneur["Spoiler"]) * np.sin(
             (-gamma) / 360 * 2 * np.pi))) - m * g)

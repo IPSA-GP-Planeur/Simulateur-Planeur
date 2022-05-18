@@ -6,10 +6,7 @@ import time
 ExecutionTime = time.time()
 TimeStep = 0.1
 
-planeur = {"Y": 0, "Z": 1000, "Vy": 30, "Vz": -1}
-
-
-# i = 0 #compteur
+planeur = {"Y": 0, "Z": 5000, "Vy": 30, "Vz": -1}
 
 
 def begin():
@@ -27,27 +24,9 @@ def __main__():
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
         planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
+        WindowEvent.actualiseOutput(planeur)
+        GraphicPane.Display(commandePlaneur, planeur)
 
-    GraphicPane.Display(commandePlaneur, planeur)
-
-    WindowEvent.actualiseOutput(planeur)
-
-
-''' 
-Test de programme pour afficher graphique en temps réel
-
-    if i%100 == 0 :
-        plt.scatter(A[0],A[1], c='black')
-        plt.pause(0.0001)
-
-    i+=1
-    plt.xlabel("Distance (m)")
-    plt.ylabel("Altitude (m)")
-    ax.set_xlim(A[0] + 10)
-    ax.set_ylim(A[1] + 10)
-    plt.show()
-
-'''
 
 begin()
 while True:

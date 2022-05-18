@@ -2,9 +2,9 @@
     ça revient au fonctionnement d'une constante sauf que celle-ci ne prend pas de place en mémoire
     et nous permet de modifier facilement le port sur lequel est branché un composant
 */
-#define PORT_SERVO_ANEMOMETRE 3
-#define PORT_SERVO_ALTIMETRE1 5
-#define PORT_SERVO_ALTIMETRE2 6
+#define PORT_SERVO_ANEMOMETRE 6
+#define PORT_SERVO_ALTIMETRE1 3
+#define PORT_SERVO_ALTIMETRE2 5
 #define PORT_SERVO_VARIOMETRE 9
 // les ports sur lesquels sont branchés les servomoteurs doivent être compatibles PWM (avoir une ~ à coté du numéro de port)
 
@@ -13,6 +13,14 @@
 #define PORT_POT_AEROFREIN A2
 #define PORT_POT_PALONNIER A3
 // les ports sur lesquels sont branchés les potentiomètre doivent être des ports analogiques
+
+#define VALEUR_LIMITE_ANEMOMETRE 178
+#define VALEUR_LIMITE_ALTIMETRE1 179
+#define VALEUR_LIMITE_ALTIMETRE2 179
+#define VALEUR_INF_LIMITE_VARIOMETRE 12
+#define VALEUR_MIL_LIMITE_VARIOMETRE 92
+#define VALEUR_SUP_LIMITE_VARIOMETRE 177
+// les valeurs limites atteintes par les servomoteurs (en m/s et m)
 
 
 #include <Servo.h>
@@ -30,11 +38,10 @@ int valPotAerofrein;
 int valPotPalonnier;
 // déclare les variables pour les potentiomètres (valeur entre 0 et 1023)
 
-
-byte valServoAnemometre = 0;
-byte valServoAltimetre1 = 0;
-byte valServoAltimetre2 = 0;
-byte valServoVariometre = 0;
+int valServoAnemometre = 0;
+int valServoAltimetre1 = 0;
+int valServoAltimetre2 = 0;
+int valServoVariometre = 0;
 // déclare les variables pour les servomoteurs (valeur entre 0 et 255)
 
 String commande = "";
@@ -43,7 +50,7 @@ String commande = "";
 
 // fonction setup ne s'exécutent qu'une seule fois au démarrage
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(57600);
   // démarre la connexion série avec Python
 
   anemometre.attach(PORT_SERVO_ANEMOMETRE);
@@ -55,8 +62,8 @@ void setup() {
 
 // fonction qui actualise la valeur des entrées (potentiomètres)
 void inputData() {
-  valMancheAxeX = map (analogRead(PORT_POT_MANCHE_AXE_X), 0, 130, -100, 100);
-  valMancheAxeY = map (analogRead(PORT_POT_MANCHE_AXE_Y), 123, 289, -100, 100);
+  valMancheAxeX = map (analogRead(PORT_POT_MANCHE_AXE_X), 237, 388, -100, 100);
+  valMancheAxeY = map (analogRead(PORT_POT_MANCHE_AXE_Y), 89, 289, -100, 100);
   valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, 0, 100);
   valPotPalonnier = map (analogRead(PORT_POT_PALONNIER), 0, 1023, -100, 100);
   // récupère la position des potentiomètres, après les avoir traduient en valeur de -100 à 100
@@ -74,11 +81,14 @@ void comSerialSimu() {
     if (caractere == 10) { // si le caractère est \n (retour à la ligne: 10 en valeur ASCII), le suffixe,  rechercher à quoi correspond le préfixe
       if (commande.substring(0, 3) == "ANE") { // si le préfixe correspond à "ANE" (anémomètre)
         valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier
+        outputAnemometre();
       } else if (commande.substring(0, 3) == "ALT") { // (altimètre)
         valServoAltimetre1 = commande.substring(3).toInt();
         valServoAltimetre2 = commande.substring((commande.length()) - 3).toInt(); // ne prend en compte que les 3 derniers chiffres du nombre réprésentant l'altitude
+        outputAltimetre();
       } else if (commande.substring(0, 3) == "VAR") { // (variomètre)
         valServoVariometre = commande.substring(3).toInt();
+        outputVariometre();
       } else if (commande.substring(0, 3) == "REL") { // (reload)
         exportDataSimu(); // éxecuter la fonction exportDataSimu()
       }
@@ -102,12 +112,23 @@ void exportDataSimu() {
   Serial.println(valPotAerofrein);
 }
 
-// fonction qui actualise les sorties (servomoteurs)
-void outputData() {
-  anemometre.write(map(valServoAnemometre, -999, 999, 0, 180));  //insérer la plage d'entrée en m/s de Vy
-  altimetre1.write(map(valServoAltimetre1, 0, 9999, 0, 180));  //insérer la plage d'entrée en m de z
-  altimetre2.write(map(valServoAltimetre2, 0, 999, 0, 180));  
-  variometre.write(map(valServoVariometre, -25, 25, 0, 180));  //insérer la plage d'entrée en m/s de Vz
+// fonctions qui actualise les sorties (servomoteurs)
+
+void outputAnemometre() {
+  valServoAnemometre = map(constrain(valServoAnemometre, 20, 240), 20, 240, 0, VALEUR_LIMITE_ANEMOMETRE);  //insérer la plage d'entrée en m/s de Vy et prendre en compte la limite des servomoteurs
+  anemometre.write(valServoAnemometre);
+}
+
+void outputAltimetre() {
+  valServoAltimetre1 = map(valServoAltimetre1, 0, 9132, 0, VALEUR_LIMITE_ALTIMETRE1);  //insérer la plage d'entrée en m de z et prendre en compte la limite des servomoteurs
+  altimetre1.write(constrain(valServoAltimetre1, 0, VALEUR_LIMITE_ALTIMETRE1));
+  valServoAltimetre2 = map(valServoAltimetre2, 0, 886, 0, VALEUR_LIMITE_ALTIMETRE2);
+  altimetre2.write(constrain(valServoAltimetre2, 0, VALEUR_LIMITE_ALTIMETRE2));
+}
+
+void outputVariometre() {
+  valServoVariometre = (valServoVariometre > 0) ? map(valServoVariometre, 0, 500, VALEUR_MIL_LIMITE_VARIOMETRE, VALEUR_SUP_LIMITE_VARIOMETRE) : map(-valServoVariometre, 500, 0, VALEUR_INF_LIMITE_VARIOMETRE, VALEUR_MIL_LIMITE_VARIOMETRE);
+  variometre.write(constrain(valServoVariometre, VALEUR_INF_LIMITE_VARIOMETRE, VALEUR_SUP_LIMITE_VARIOMETRE));  //insérer la plage d'entrée en cm/s de Vz
   // écrit la position des servomoteurs
 }
 
@@ -115,5 +136,4 @@ void outputData() {
 void loop() {
   inputData();
   comSerialSimu();
-  outputData();
 }
