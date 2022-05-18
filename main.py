@@ -24,30 +24,14 @@ def __main__():
     global planeurCartesien
     global planeurCylindrique
 
-    commandePlaneur = WindowEvent.Actualise()
+    commandePlaneur = WindowEvent.actualiseInput()
 
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
         planeurCylindrique, planeurCartesien = Physics.ExecuteEuler(commandePlaneur, planeurCylindrique, TimeStep)
+        WindowEvent.actualiseOutput(planeurCartesien)
+        GraphicPane.Display(commandePlaneur, planeurCartesien)
 
-    GraphicPane.Display(commandePlaneur, planeurCartesien)
-
-
-''' 
-Test de programme pour afficher graphique en temps réel
-
-    if i%100 == 0 :
-        plt.scatter(A[0],A[1], c='black')
-        plt.pause(0.0001)
-
-    i+=1
-    plt.xlabel("Distance (m)")
-    plt.ylabel("Altitude (m)")
-    ax.set_xlim(A[0] + 10)
-    ax.set_ylim(A[1] + 10)
-    plt.show()
-
-'''
 
 begin()
 while True:

@@ -1,0 +1,5 @@
+Plage sur 10 bits(0-1023):
+	X: 0 à 130
+	Y: 123 à 289
+	Z:
+	Spoiler: 0 à 1023
