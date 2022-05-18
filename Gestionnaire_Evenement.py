@@ -49,8 +49,6 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
                 dataCellule['Spoiler'] = int(commande[3:-2])
         return dataCellule
 
-commandePlaneur = {"X": 0, "Y": 0, "Spoiler": 0}
-
     # fonction d'actualisation des servomoteurs
     def actualiseOutput(planeur):
         arduino.write(b'ANE')

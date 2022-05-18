@@ -15,7 +15,7 @@ planeurCartesien = {"X": 0, "Y": 0, "Z": 1000, "Vy": 30, "Vz": -1, "Vz": 0}
 
 def begin():
     GraphicPane.begin(500, 500)
-    WindowEvent.begin(10, 0.01)
+    WindowEvent.begin()
 
 
 def __main__():
