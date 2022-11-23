@@ -78,7 +78,7 @@ void comSerialSimu() {
     char caractere = Serial.read();
     // stocke le caractère reçue
 
-    if (caractere == 10) { // si le caractère est \n (retour à la ligne: 10 en valeur ASCII), le suffixe,  rechercher à quoi correspond le préfixe
+    if (caractere == '\n') { // si le caractère est \n (retour à la ligne: 10 en valeur ASCII), le suffixe,  rechercher à quoi correspond le préfixe
       if (commande.substring(0, 3) == "ANE") { // si le préfixe correspond à "ANE" (anémomètre)
         valServoAnemometre = commande.substring(3).toInt(); // stocker la variable correspondant à l'anémomètre, après l'avoir convertie d'ASCII à entier
         outputAnemometre();
