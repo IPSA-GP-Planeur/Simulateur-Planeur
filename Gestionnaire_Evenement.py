@@ -1,3 +1,4 @@
+from os import name as operating_system
 from time import sleep  # importe la fonction sleep de la bibliothèque time
 import serial  # importe la bibliothèque pyserial qui gère la communication série
 import serial.tools.list_ports  # importe l'outil list.ports qui sert à lister les ports séries disponibles
@@ -12,8 +13,19 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
 
         for port in available_ports:
             if "Arduino" in port.description:
-                portArduino = port.name
+                if operating_system == "nt":
+                    print("OS détecté : Windows")
+                    portArduino = port.name
+                elif operating_system == "posix":
+                    print("OS détecté : Linux")
+                    portArduino = "/dev/" + port.name
                 # récupère le port où est connecté l'Arduino
+                
+        try:
+            portArduino 
+        except UnboundLocalError:
+            print("pas d'Arduino détecté")
+            exit(0)
 
         arduino.baudrate = 57600
         arduino.port = portArduino
