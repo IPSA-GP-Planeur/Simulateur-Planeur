@@ -6,7 +6,11 @@ import time
 ExecutionTime = time.time()
 TimeStep = 0.1
 
-planeur = {"Y": 0, "Z": 5000, "Vy": 30, "Vz": -1}
+planeurCylindrique = {"r": 1, "theta": 0, "z": 1000, "rp": 25, "thetap": 0, "zp": -1}
+planeurCartesien = {"X": 0, "Y": 0, "Z": 1000, "Vy": 30, "Vz": -1, "Vz": 0}
+
+
+# i = 0 #compteur
 
 
 def begin():
@@ -17,15 +21,16 @@ def begin():
 def __main__():
     global ExecutionTime
     global TimeStep
-    global planeur
+    global planeurCartesien
+    global planeurCylindrique
 
     commandePlaneur = WindowEvent.actualiseInput()
 
     if time.time() >= ExecutionTime:
         ExecutionTime += TimeStep
-        planeur = Physics.ExecuteEuler(commandePlaneur, planeur, TimeStep)
-        WindowEvent.actualiseOutput(planeur)
-        GraphicPane.Display(commandePlaneur, planeur)
+        planeurCylindrique, planeurCartesien = Physics.ExecuteEuler(commandePlaneur, planeurCylindrique, TimeStep)
+        WindowEvent.actualiseOutput(planeurCartesien)
+        GraphicPane.Display(commandePlaneur, planeurCartesien)
 
 
 begin()
