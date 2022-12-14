@@ -14,6 +14,10 @@
 #define PORT_POT_PALONNIER A3
 // les ports sur lesquels sont branchés les potentiomètre doivent être des ports analogiques
 
+#define PORT_SWITCH_START_STOP 11
+#define PORT_SWITCH_PAUSE 12
+// les ports sur lesquels sont branchés les interrupteurs (switchs)
+
 #define VALEUR_LIMITE_ANEMOMETRE 178
 #define VALEUR_LIMITE_ALTIMETRE1 179
 #define VALEUR_LIMITE_ALTIMETRE2 179
@@ -32,17 +36,22 @@ Servo altimetre2;
 Servo variometre;
 // définie trois fonctions qui utiliseront la bibliothèque Servo
 
+int valServoAnemometre = 0;
+int valServoAltimetre1 = 0;
+int valServoAltimetre2 = 0;
+int valServoVariometre = 0;
+// déclare les variables pour les servomoteurs (valeur entre 0 et 255)
+
 int valMancheAxeX;
 int valMancheAxeY;
 int valPotAerofrein;
 int valPotPalonnier;
 // déclare les variables pour les potentiomètres (valeur entre 0 et 1023)
 
-int valServoAnemometre = 0;
-int valServoAltimetre1 = 0;
-int valServoAltimetre2 = 0;
-int valServoVariometre = 0;
-// déclare les variables pour les servomoteurs (valeur entre 0 et 255)
+bool valSwitchStartStop;
+bool valSwitchPause;
+// déclare les variables pour les interrupteurs (valeur 0 ou 1)
+// la position par défaut des interrupteurs (cache fermé) donne 1
 
 String commande = "";
 //déclare la variable qui contiendra temporairement la commande reçue de Python
@@ -58,6 +67,9 @@ void setup() {
   altimetre2.attach(PORT_SERVO_ALTIMETRE2);
   variometre.attach(PORT_SERVO_VARIOMETRE);
   // définit les ports reliés aux servomoteurs
+
+  pinMode(PORT_SWITCH_START_STOP, INPUT_PULLUP);
+  pinMode(PORT_SWITCH_PAUSE, INPUT_PULLUP);
 }
 
 // fonction qui actualise la valeur des entrées (potentiomètres)
@@ -67,6 +79,10 @@ void inputData() {
   valPotAerofrein = map (analogRead(PORT_POT_AEROFREIN), 0, 1023, 0, 100);
   valPotPalonnier = map (analogRead(PORT_POT_PALONNIER), 0, 1023, -100, 100);
   // récupère la position des potentiomètres, après les avoir traduient en valeur de -100 à 100
+
+  valSwitchStartStop = !digitalRead(PORT_SWITCH_START_STOP);
+  valSwitchPause = !digitalRead(PORT_SWITCH_PAUSE);
+  //récupère la position des interrupteurs
 }
 
 // fonction qui gère la communication entrante avec Python
@@ -110,6 +126,10 @@ void exportDataSimu() {
   Serial.println(valPotPalonnier);
   Serial.print("AER");
   Serial.println(valPotAerofrein);
+  Serial.print("STA");
+  Serial.println(valSwitchStartStop);
+  Serial.print("PAU");
+  Serial.println(valSwitchPause);
 }
 
 // fonctions qui actualise les sorties (servomoteurs)

@@ -38,7 +38,7 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
         sleep(2)  # attendre 2 sec que l'Arduino reboot
 
 
-    # fonction d'actualisation des potentiomètres
+    # fonction d'actualisation des potentiomètres et des interrupteurs
     def actualiseInput():
 
         dataCellule = {}
@@ -59,6 +59,10 @@ with serial.Serial() as arduino:  # défini arduino comme la fonction serial.Ser
                 dataCellule['Z'] = int(commande[3:-2])
             if commande[0:3] == 'AER':  # (aerofrein)
                 dataCellule['Spoiler'] = int(commande[3:-2])
+            if commande[0:3] == 'STA':  # (start stop)
+                dataCellule['Start_Stop'] = bool(commande[3:-2])
+            if commande[0:3] == 'PAU':  # (pause)
+                dataCellule['Pause'] = bool(commande[3:-2])
         return dataCellule
 
     # fonction d'actualisation des servomoteurs
