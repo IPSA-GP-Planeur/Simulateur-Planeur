@@ -3,6 +3,13 @@
 #define PORT_POT_AEROFREIN A2
 #define PORT_POT_PALONNIER A3
 
+int valMancheAxeX;
+int valMancheAxeY;
+int valPotAerofrein;
+int valPotPalonnier;
+// déclare les variables pour les potentiomètres (valeur entre 0 et 1023)
+
+
 void setup() {
   Serial.begin(9600);
 }
