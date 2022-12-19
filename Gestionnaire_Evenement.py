@@ -2,16 +2,20 @@ import pygame
 
 # le programme va simuler l'input d'un joystick en attendant qu'on en incorpore 1
 
-commandePlaneur = {"X": 0, "Y": 0, "Spoiler": 0}
+commandePlaneur = {"X": 0, "Y": -1, "Spoiler": 0}
+# avec une assiette de 0 le code ne fonctionne pas !!!
 
-YaxisValue = 0  # valeur de l'assiete initiale
 
-afstep = 1
+quitter = pygame.image.load('accident.png') # charge l'image
+quitter = pygame.transform.scale(quitter, (200,200))
+quitter_rect = quitter.get_rect()
+quitter_rect.x = 200
+quitter_rect.y = 200
 
 
 def begin(RepeatFrequency, step):
-    global YaxisStep
-    YaxisStep = step
+    global YaxisStep, XaxisStep, afstep
+    YaxisStep, XaxisStep, afstep = step, step, step
     pygame.key.set_repeat(RepeatFrequency)
 
 
@@ -19,6 +23,8 @@ def Actualise():  # méthode pour actualiser les actions sur le clavier et la fe
 
     global commandePlaneur
     # On récupère les valeurs de l'assiette et des aérofreins
+
+    global quitter_rect
 
     for event in pygame.event.get():
         # attribue a des actions de l'utilisateur une réponse du programme
@@ -33,6 +39,12 @@ def Actualise():  # méthode pour actualiser les actions sur le clavier et la fe
             if event.key == pygame.K_DOWN:
                 commandePlaneur["Y"] += YaxisStep  # on augmente sa valeur
 
+            if event.key == pygame.K_RIGHT:
+                commandePlaneur["X"] -= XaxisStep #pour chaque pression sur la touche on diminue la valeur de theta
+            
+            if event.key == pygame.K_LEFT:
+                commandePlaneur["X"] += XaxisStep #pour chaque pression sur la touche on augmente la valeur de theta
+            
             if event.key == pygame.K_h:
 
                 if commandePlaneur["Spoiler"] < 100:
@@ -42,4 +54,9 @@ def Actualise():  # méthode pour actualiser les actions sur le clavier et la fe
 
                 if commandePlaneur["Spoiler"] > 0:
                     commandePlaneur["Spoiler"] -= afstep  # et la touche j pour diminuer
+    
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if quitter_rect.collidepoint(event.pos):
+                pygame.quit()  
+
     return commandePlaneur

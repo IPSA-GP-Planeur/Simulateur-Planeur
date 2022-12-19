@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 13 17:15:00 2022
-
-@author: theod
-"""
-
 import numpy as np
 
 m = 500  # masse du planeur (kg)
@@ -12,10 +5,6 @@ g = 9.81  # constante gravitationelle (m3 kg−1 s−2) orienté vers le bas
 rho = 1.3  # masse volumique de l'air (kg m-3)
 S = 16  # surface alaire du planeur (m2)
 
-B = [1, 0, 1000, 25, 0, -1]
-
-
-# matrice initiale contenant [r ;theta ;z ;rp ;thetap ;zp ]
 
 def ExecuteEuler(commandePlaneur, planeurCylindrique,
                  h):  # méthode d'Euler renvoyant la matrice A à l'instant t+h
